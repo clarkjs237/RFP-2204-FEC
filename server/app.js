@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 
+// Connect to the db on server start
+const db = require('./reviews_sully/db');
+
 const app = express();
 const port = 8080;
 
