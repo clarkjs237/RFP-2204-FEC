@@ -89,34 +89,34 @@ const config = {
 const client = new pg.Client(config);
 
 
-async function characteristicsTableGenerator() {
-  await client.query(`
-    CREATE TABLE
-      characteristic_reviews
-      (id SERIAL PRIMARY KEY,
-        characteristic_id INT,
-        review_id INT,
-        value INT
-      )`
-  );
-  // await client.query(`
-  //   INSERT INTO
-  //     characteristics (characteristic)
-  //   VALUES
-  //     (Comfort)
-  // `);
-}
+// async function characteristicsTableGenerator() {
+//   await client.query(`
+//     CREATE TABLE IF NOT EXISTS
+//       characteristic_reviews
+//       (id SERIAL PRIMARY KEY,
+//         characteristic_id INT,
+//         review_id INT,
+//         value INT
+//       )`
+//   );
+//   // await client.query(`
+//   //   INSERT INTO
+//   //     characteristics (characteristic)
+//   //   VALUES
+//   //     (Comfort)
+//   // `);
+// }
 
-function photosTableGenerator() {
-  client.query(`
-    CREATE TABLE
-      photos
-      (id SERIAL PRIMARY KEY,
-        review_id INT,
-        url VARCHAR
-      )`
-  );
-}
+// function photosTableGenerator() {
+//   client.query(`
+//     CREATE TABLE IF NOT EXISTS
+//       photos
+//       (id SERIAL PRIMARY KEY,
+//         review_id INT,
+//         url VARCHAR
+//       )`
+//   );
+// }
 
 async function databaseCreator() {
   await client.connect();
@@ -127,7 +127,7 @@ async function databaseCreator() {
 
   // Characteristic Reviews table
   await client.query(`
-  CREATE TABLE
+  CREATE TABLE IF NOT EXISTS
     characteristic_reviews
     (id SERIAL PRIMARY KEY,
       characteristic_id INT,
@@ -138,43 +138,57 @@ async function databaseCreator() {
 
   // Photos table
   await client.query(`
-  CREATE TABLE
+  CREATE TABLE IF NOT EXISTS
     photos
     (id SERIAL PRIMARY KEY,
       review_id INT,
-      url VARCHAR
+      url TEXT
     )`
   );
 
   // Reviews table
   await client.query(`
-  CREATE TABLE
+  CREATE TABLE IF NOT EXISTS
     reviews
     (id SERIAL PRIMARY KEY,
       product_id INT,
       rating INT,
-      summary VARCHAR,
+      date TEXT,
+      summary TEXT,
+      body TEXT,
       recommend BOOLEAN,
-      body VARCHAR,
-      date INT,
-      reviewer_name VARCHAR,
+      reported BOOLEAN,
+      reviewer_name TEXT,
+      reviewer_email TEXT,
+      response TEXT,
       helpfulness INT
     )`
   );
 
-  // Ratings table
+  // Characteristics table
   await client.query(`
-  CREATE TABLE
-    ratings
+  CREATE TABLE IF NOT EXISTS
+    characteristics
     (id SERIAL PRIMARY KEY,
       product_id INT,
-      one_star INT,
-      two_star INT,
-      three_star INT,
-      four_star INT,
-      five_star INT
+      name TEXT
     )`
   );
+
+
+  // // Ratings table
+  // await client.query(`
+  // CREATE TABLE
+  //   ratings
+  //   (id SERIAL PRIMARY KEY,
+  //     product_id INT,
+  //     one_star INT,
+  //     two_star INT,
+  //     three_star INT,
+  //     four_star INT,
+  //     five_star INT
+  //   )`
+  // );
 
 
   // characteristicsTableGenerator();
