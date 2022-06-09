@@ -1,82 +1,4 @@
-// const postgres = require('postgres');
-// // import postgres from 'postgres';
-
-// const sql = postgres('postgres://username:password@host:port/database', {
-//   host: 'localhost',
-//   username: '',
-//   password: '',
-//   port: 5432,
-//   database: 'tester'
-// });
-
-// // async function createTable() {
-// //   const t = await sql`
-// //     create database if not exists toaster
-// //   `;
-
-// //   return t;
-// // }
-
-// // createTable();
-
-// module.exports = sql;
-// export default sql;
-
-
-
-// const pool = new pg.Pool(config);
-
-// async function createTable() {
-//   const client = await pool.connect();
-
-//   try {
-//     await client.query('CREATE TABLE IF NOT EXISTS example_table');
-//   } catch (error) {
-//     console.error(error);
-//   }
-
-//   await pool.end();
-// }
-
-// createTable();
-
-// module.exports = pool;
-
-
-
-// This returns the correct data
-// const { Client } = require('pg');
-
-// const config = {
-//   user: 'sullyclark',
-//   password: 'password',
-//   database: 'tester',
-//   host: 'localhost',
-//   port: 5432
-// }
-
-// const client = new Client(config);
-
-// client.connect();
-
-// client.query('SELECT * FROM t', (err, res) => {
-//   if (!err) {
-//     console.log(res.rows);
-//   } else {
-//     console.log(err);
-//   }
-//   client.end();
-// })
-
 const pg = require('pg');
-
-// const config = {
-//   user: 'sullyclark',
-//   password: 'password',
-//   database: 'tester',
-//   host: 'localhost',
-//   port: 5432
-// }
 
 const config = {
   user: 'sullyclark',
@@ -89,35 +11,6 @@ const config = {
 const client = new pg.Client(config);
 
 
-// async function characteristicsTableGenerator() {
-//   await client.query(`
-//     CREATE TABLE IF NOT EXISTS
-//       characteristic_reviews
-//       (id SERIAL PRIMARY KEY,
-//         characteristic_id INT,
-//         review_id INT,
-//         value INT
-//       )`
-//   );
-//   // await client.query(`
-//   //   INSERT INTO
-//   //     characteristics (characteristic)
-//   //   VALUES
-//   //     (Comfort)
-//   // `);
-// }
-
-// function photosTableGenerator() {
-//   client.query(`
-//     CREATE TABLE IF NOT EXISTS
-//       photos
-//       (id SERIAL PRIMARY KEY,
-//         review_id INT,
-//         url VARCHAR
-//       )`
-//   );
-// }
-
 async function databaseCreator() {
   await client.connect();
   // await client.query('DROP DATABASE reviews_db');
@@ -129,7 +22,7 @@ async function databaseCreator() {
   await client.query(`
   CREATE TABLE IF NOT EXISTS
     characteristic_reviews
-    (id SERIAL PRIMARY KEY,
+    (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       characteristic_id INT,
       review_id INT,
       value INT
@@ -140,7 +33,7 @@ async function databaseCreator() {
   await client.query(`
   CREATE TABLE IF NOT EXISTS
     photos
-    (id SERIAL PRIMARY KEY,
+    (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       review_id INT,
       url TEXT
     )`
@@ -150,7 +43,7 @@ async function databaseCreator() {
   await client.query(`
   CREATE TABLE IF NOT EXISTS
     reviews
-    (id SERIAL PRIMARY KEY,
+    (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       product_id INT,
       rating INT,
       date TEXT,
@@ -169,31 +62,58 @@ async function databaseCreator() {
   await client.query(`
   CREATE TABLE IF NOT EXISTS
     characteristics
-    (id SERIAL PRIMARY KEY,
+    (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       product_id INT,
       name TEXT
     )`
   );
 
 
-  // // Ratings table
-  // await client.query(`
-  // CREATE TABLE
-  //   ratings
-  //   (id SERIAL PRIMARY KEY,
-  //     product_id INT,
-  //     one_star INT,
-  //     two_star INT,
-  //     three_star INT,
-  //     four_star INT,
-  //     five_star INT
-  //   )`
-  // );
+
+  // Actually loading the db now using COPY
+  await client.query(`
+    COPY characteristic_reviews
+    FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/characteristic_reviews.csv'
+    DELIMITER ','
+    CSV Header;
+  `);
+  await client.query(`
+    COPY characteristics
+    FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/characteristics.csv'
+    DELIMITER ','
+    CSV Header;
+  `);
+  await client.query(`
+    COPY photos
+    FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/reviews_photos.csv'
+    DELIMITER ','
+    CSV Header;
+  `);
+  await client.query(`
+    COPY reviews
+    FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/reviews_transformed.csv'
+    DELIMITER ','
+    CSV Header;
+  `);
 
 
-  // characteristicsTableGenerator();
-  // await photosTableGenerator();
-  // await client.query("SELECT 'CREATE DATABASE example_db' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mydb')"\gexec);
+  // Adjust the setval so the max is
+  await client.query(`
+  SELECT setval('characteristic_reviews_id_seq', (SELECT MAX(id) from "characteristic_reviews"));
+  `)
+  await client.query(`
+  SELECT setval('characteristics_id_seq', (SELECT MAX(id) from "characteristics"));
+  `)
+  await client.query(`
+  SELECT setval('reviews_id_seq', (SELECT MAX(id) from "reviews"));
+  `)
+  await client.query(`
+  SELECT setval('photos_id_seq', (SELECT MAX(id) from "photos"));
+  `)
+
+
+
+
   await client.end();
 }
 
