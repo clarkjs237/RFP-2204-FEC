@@ -16,36 +16,36 @@ CREATE DATABASE reviews_db;
 
 CREATE TABLE IF NOT EXISTS characteristic_reviews (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  characteristic_id INT,
-  review_id INT,
-  value INT
+  characteristic_id INT NOT NULL,
+  review_id INT NOT NULL,
+  value INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS photos (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  review_id INT,
-  url TEXT
+  review_id INT NOT NULL,
+  url TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS reviews (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  product_id INT,
-  rating INT,
-  date TEXT,
-  summary TEXT,
-  body TEXT,
-  recommend BOOLEAN,
-  reported BOOLEAN,
-  reviewer_name TEXT,
-  reviewer_email TEXT,
+  product_id INT NOT NULL,
+  rating INT NOT NULL,
+  "date" TEXT NOT NULL,
+  summary TEXT NOT NULL,
+  body TEXT NOT NULL,
+  recommend BOOLEAN NOT NULL,
+  reported BOOLEAN DEFAULT FALSE NOT NULL,
+  reviewer_name TEXT NOT NULL,
+  reviewer_email TEXT NOT NULL,
   response TEXT,
-  helpfulness INT
+  helpfulness INT DEFAULT 0 NOT NULL -- I think I want the default here to be 0, for when a review is originally posted
 );
 
 CREATE TABLE IF NOT EXISTS characteristics (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  product_id INT,
-  name TEXT
+  product_id INT NOT NULL,
+  name TEXT NOT NULL
 );
 
 -- Copying the data from the csv files to the tables
