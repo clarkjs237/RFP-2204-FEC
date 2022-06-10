@@ -4,12 +4,12 @@ const path = require('path');
 // Connect to the db on server start
 const db = require('./reviews_sully/db');
 
-// async function testerBoy() {
-//   const res = await db.query('SELECT * FROM photos LIMIT 10');
-//   console.log(res.rows);
-// }
+async function testerBoy() {
+  const res = await db.query('SELECT * FROM photos LIMIT 10');
+  console.log(res.rows);
+}
 
-// testerBoy();
+testerBoy();
 
 
 const app = express();
