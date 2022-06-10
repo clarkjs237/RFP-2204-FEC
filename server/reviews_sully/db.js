@@ -19,7 +19,12 @@ async function connector() {
   // await client.end();
 }
 
+// Connect to the client
 connector();
+
+// ---------------------------------------
+//          CRUD OPERATIONS
+// ---------------------------------------
 
 // This is where I could come up with my CRUD operations and export them as so
 exports.testerBoy = async function testerBoy() {
@@ -27,36 +32,12 @@ exports.testerBoy = async function testerBoy() {
   return res;
 }
 
-exports.bananaBoat = async function bananaBoat() {
-  const res = await client.query('SELECT * FROM photos ORDER BY id DESC LIMIT 10');
-  return res;
-}
-
-
-// On the put request, we are missing:
-// date, reported, response, helpfulness - we can omit helpfulness bc default is 0
-// we cam omit response and reported as well
-// So all we need is to get date in that iso format for utc
-
-// We need:
-
-// product_id
-// rating
-// date    --- NEED TO CREATE THIS MYSELF
-// summary
-// body
-// recommend
-// reviewer_name
-// reviewer_email
-
+//                 CREATE
+// ---------------------------------------
+// Add a review to the db
 exports.addReview = async function addReview(review) {
-  // review is supposedly going to be the review that we need
-  // console.log('THIS IS REVIEW');
-  // console.log(review);
-  // console.log(Object.values(review))
-  // console.log(new Date().getTime());
-
-  // Create query and use values witj dollar sign
+  // Review is the review object containing all this info, except for date
+  // Create query and use values with dollar sign
   // Need to put quotes around date bc it is a reserved word
   const query = `
     INSERT INTO
@@ -83,121 +64,34 @@ exports.addReview = async function addReview(review) {
   return res;
 }
 
-// Export the client
-// module.exports =  client;
+
+//                  READ
+// ---------------------------------------
+// this is where the reviews meta and the product id specific page and count will come from
 
 
 
+//                 UPDATE
+// ---------------------------------------
+// This is where we will mark reviews as helpful or reported based on what's entered
+exports.markHelpful = async function markHelpful(review_id) {
+  // will update the count of helpfulness by 1 based on review_id
+  const query = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = $1`;
+  const queryArgs = [review_id];
+
+  const res = await client.query(query, queryArgs);
+  return res;
+}
+
+exports.markReported = async function markReported(review_id) {
+  // will change the reported column from false to true
+  const query = `UPDATE reviews SET reported = TRUE WHERE id = $1`;
+  const queryArgs = [review_id];
+
+  const res = await client.query(query, queryArgs);
+  return res;
+}
 
 
 
-
-
-
-// Not gonna use this but was kind of interesting to do
-
-// async function databaseCreator() {
-//   await client.connect();
-//   // await client.query('DROP DATABASE reviews_db');
-//   // await client.query('CREATE DATABASE reviews_db');
-//   // await client.connect();
-//   // await client.query('\c reviews_db');
-
-//   // Characteristic Reviews table
-//   await client.query(`
-//   CREATE TABLE IF NOT EXISTS
-//     characteristic_reviews
-//     (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-//       characteristic_id INT,
-//       review_id INT,
-//       value INT
-//     )`
-//   );
-
-//   // Photos table
-//   await client.query(`
-//   CREATE TABLE IF NOT EXISTS
-//     photos
-//     (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-//       review_id INT,
-//       url TEXT
-//     )`
-//   );
-
-//   // Reviews table
-//   await client.query(`
-//   CREATE TABLE IF NOT EXISTS
-//     reviews
-//     (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-//       product_id INT,
-//       rating INT,
-//       date TEXT,
-//       summary TEXT,
-//       body TEXT,
-//       recommend BOOLEAN,
-//       reported BOOLEAN,
-//       reviewer_name TEXT,
-//       reviewer_email TEXT,
-//       response TEXT,
-//       helpfulness INT
-//     )`
-//   );
-
-//   // Characteristics table
-//   await client.query(`
-//   CREATE TABLE IF NOT EXISTS
-//     characteristics
-//     (id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-//       product_id INT,
-//       name TEXT
-//     )`
-//   );
-
-
-
-//   // Actually loading the db now using COPY
-//   await client.query(`
-//     COPY characteristic_reviews
-//     FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/characteristic_reviews.csv'
-//     DELIMITER ','
-//     CSV Header;
-//   `);
-//   await client.query(`
-//     COPY characteristics
-//     FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/characteristics.csv'
-//     DELIMITER ','
-//     CSV Header;
-//   `);
-//   await client.query(`
-//     COPY photos
-//     FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/reviews_photos.csv'
-//     DELIMITER ','
-//     CSV Header;
-//   `);
-//   await client.query(`
-//     COPY reviews
-//     FROM '/Users/sullyclark/Desktop/HackReactor/SDC/PythonCSVProcessing/reviews_transformed.csv'
-//     DELIMITER ','
-//     CSV Header;
-//   `);
-
-
-//   // Adjust the setval so the max is
-//   await client.query(`
-//   SELECT setval('characteristic_reviews_id_seq', (SELECT MAX(id) from "characteristic_reviews"));
-//   `)
-//   await client.query(`
-//   SELECT setval('characteristics_id_seq', (SELECT MAX(id) from "characteristics"));
-//   `)
-//   await client.query(`
-//   SELECT setval('reviews_id_seq', (SELECT MAX(id) from "reviews"));
-//   `)
-//   await client.query(`
-//   SELECT setval('photos_id_seq', (SELECT MAX(id) from "photos"));
-//   `)
-
-
-
-
-//   await client.end();
-// }
+// await client.end();

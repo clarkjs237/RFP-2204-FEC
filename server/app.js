@@ -16,15 +16,7 @@ app.listen(port, () => {
 
 
 // Import the CRUD functions from the db on server start
-const {testerBoy, addReview} = require('./reviews_sully/db');
-
-
-// testerBoy()
-// .then((res) => console.log(res.rows))
-
-// bananaBoat()
-// .then((res) => console.log(res.rows))
-
+const {addReview, markHelpful, markReported} = require('./reviews_sully/db');
 
 
 // ---------------------------------------
@@ -33,16 +25,39 @@ const {testerBoy, addReview} = require('./reviews_sully/db');
 
 
 
-app.get('/tester', (req, res) => {
-  // res.send('hello')
-  testerBoy()
-  .then((results) => res.send(results.rows))
-})
+// app.get('/tester', (req, res) => {
+//   // res.send('hello')
+//   testerBoy()
+//   .then((results) => res.send(results.rows))
+// })
 
 // Posting to reviews endpoint
+// THIS ADDS A NEW REVIEW
 app.post('/reviews', (req, res) => {
   // console.log(req.body); returning this correctly
   addReview(req.body)
+  .then(() => res.sendStatus(201))
+  .catch((err) => console.error(err))
+})
 
-  res.send('tester');
+
+
+//                 PUT
+// ---------------------------------------
+
+// Marking reviews as helpful or reporting them
+app.put('/reviews/:review_id/helpful', (req, res) => {
+  // res.send(req.params.review_id)
+  // req.params.review_id is the id we want to update
+  markHelpful(req.params.review_id)
+  .then(() => res.sendStatus(204))
+  .catch((err) => console.error(err))
+})
+
+// Marking a review as reported
+app.put('/reviews/:review_id/report', (req, res) => {
+
+  markReported(req.params.review_id)
+  .then(() => res.sendStatus(204))
+  .catch((err) => console.error(err))
 })
