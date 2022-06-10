@@ -16,7 +16,11 @@ app.listen(port, () => {
 
 
 // Import the CRUD functions from the db on server start
-const {addReview, markHelpful, markReported} = require('./reviews_sully/db');
+const {
+  addReview,
+  markHelpful,
+  markReported,
+  readProduct} = require('./reviews_sully/db');
 
 
 // ---------------------------------------
@@ -24,12 +28,8 @@ const {addReview, markHelpful, markReported} = require('./reviews_sully/db');
 // ---------------------------------------
 
 
-
-// app.get('/tester', (req, res) => {
-//   // res.send('hello')
-//   testerBoy()
-//   .then((results) => res.send(results.rows))
-// })
+//                 POST
+// ---------------------------------------
 
 // Posting to reviews endpoint
 // THIS ADDS A NEW REVIEW
@@ -41,8 +41,29 @@ app.post('/reviews', (req, res) => {
 })
 
 
+//                  GET
+// ---------------------------------------
 
-//                 PUT
+// This is how I will handle the requests for the product data
+app.get('/reviews', (req, res) => {
+  console.log(req.query)
+  let {product_id, page, count, sort} = req.query;
+
+  // Set defaults of 1 for page and 5 for count
+  page = page || 1;
+  count = count || 5;
+  sort = sort || null; // I think I may want to change this
+
+  readProduct(product_id, page, count, sort);
+
+  res.send('hello')
+})
+
+
+
+
+
+//                  PUT
 // ---------------------------------------
 
 // Marking reviews as helpful or reporting them

@@ -26,12 +26,6 @@ connector();
 //          CRUD OPERATIONS
 // ---------------------------------------
 
-// This is where I could come up with my CRUD operations and export them as so
-exports.testerBoy = async function testerBoy() {
-  const res = await client.query('SELECT * from photos LIMIT 10');
-  return res;
-}
-
 //                 CREATE
 // ---------------------------------------
 // Add a review to the db
@@ -68,6 +62,11 @@ exports.addReview = async function addReview(review) {
 //                  READ
 // ---------------------------------------
 // this is where the reviews meta and the product id specific page and count will come from
+exports.readProduct = async function readProduct(product_id, page, count) {
+  console.log(product_id)
+  console.log(page)
+  console.log(count)
+}
 
 
 
