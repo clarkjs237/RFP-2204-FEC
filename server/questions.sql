@@ -4,29 +4,29 @@ CREATE DATABASE questions;
 
 CREATE TABLE questions (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  product_id NUMERIC NOT NULL,
+  product_id INTEGER NOT NULL,
   body TEXT NOT NULL,
   date_written BIGINT NOT NULL,
   asker_name TEXT NOT NULL,
   asker_email TEXT NOT NULL,
   reported BOOLEAN DEFAULT false,
-  helpful NUMERIC DEFAULT 0
+  helpful INTEGER DEFAULT 0
 );
 
 CREATE TABLE answers (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  question_id NUMERIC NOT NULL REFERENCES questions,
+  question_id INTEGER NOT NULL REFERENCES questions,
   body TEXT NOT NULL,
   date_written BIGINT NOT NULL,
   answerer_name TEXT NOT NULL,
   answerer_email TEXT NOT NULL,
   reported BOOLEAN DEFAULT false,
-  helpful NUMERIC DEFAULT 0
+  helpful INTEGER DEFAULT 0
 );
 
 CREATE TABLE answers_photos (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  answer_id NUMERIC NOT NULL REFERENCES answers,
+  answer_id INTEGER NOT NULL REFERENCES answers,
   url TEXT NOT NULL
 );
 
