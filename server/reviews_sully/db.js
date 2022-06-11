@@ -113,9 +113,13 @@ exports.addReview = async function addReview(review) {
   // I'm going to receive:
   // characteristic_id which is a string version of a number. This corresponds to ID IN CHARACTERISTICS
   // value. This will be entered into characteristic_reviews
+
+  // So we are looping through the keys in characteristics, which are the
+  // characteristic_ids. Then we want to post to the characteristic_reviews table
+  // with the characteristic_id, review_id, and value associated. All good!
   Object.keys(characteristics).forEach((char_id) => {
-    console.log(char_id)
-    console.log(characteristics[char_id])
+    // console.log(char_id)
+    // console.log(characteristics[char_id])
     addToCharReviews(char_id, review_id, characteristics[char_id])
   })
 
@@ -129,10 +133,69 @@ exports.addReview = async function addReview(review) {
 //                  READ
 // ---------------------------------------
 // this is where the reviews meta and the product id specific page and count will come from
-exports.readProduct = async function readProduct(product_id, page, count) {
-  console.log(product_id)
-  console.log(page)
-  console.log(count)
+exports.readProduct = async function readProduct(product_id, page, count, sort) {
+  // Figure out how to sort this list
+  let sort_parameter;
+  if (sort === 'relevant') {
+    sort_parameter = '';
+  } else if (sort === 'helpful') {
+    sort_parameter = 'ORDER BY helpfulness DESC';
+  } else {
+    sort_parameter = 'ORDER BY date DESC';
+  }
+
+  // so page will be the offset value. This is determined by page * count.
+  // count will be whatever the value passed in is
+  // Will order by id as default unless sort is helpful or newest or relevant
+  // Maybe relevant is the default and should just be id?
+  const query = `
+    SELECT review_id, rating, summary, recommend, response, body, "date", reviewer_name, helpfulness FROM reviews
+    WHERE product_id = ${product_id} AND reported = FALSE
+    ${sort_parameter}
+    OFFSET ${page * count}
+    LIMIT ${count}
+  `;
+
+  // This looks good for now. We need to also get photos and remove reviewer_email
+  // and then reorganize things
+  const res = await client.query(query);
+  const reviews_arr = res.rows;
+
+  // I need to go through res.rows and get the photos that are associated with this
+  // review_id for each one of these reviews
+
+  // WOW
+  // I needed to asynchronously get the photos based on review_id and map them
+  // to an array. This is a really cool thing
+  // For the journal, when I didn't use that await line before client.query, the
+  // array returned was full of undefined values. Which makes sense bc it wasn't
+  // waiting for the async call to finish first
+  // https://advancedweb.hu/how-to-use-async-functions-with-array-map-in-javascript/
+  const photos_arr = await Promise.all(reviews_arr.map(async (review) => {
+    const photo_query = `
+      SELECT id,url FROM photos WHERE review_id = ${review.id}
+    `;
+    let photo_res = await client.query(photo_query);
+    photo_res = photo_res.rows;
+    return photo_res;
+  }))
+
+  // console.log(photo_arr);
+  // Need to assign it to variable bc destructing doesn't like res.rows
+
+  // const reviews_arr = res.rows;
+
+  reviews_arr.forEach((review, index) => {
+    // review.photos = 'THIS IS PHOTOS'
+    review.photos = photos_arr[index];
+  })
+
+  return reviews_arr;
+}
+
+// Get the meta reviews for product id
+exports.readProductMeta = async function readProductMeta(){
+  console.log('hello');
 }
 
 
@@ -142,7 +205,7 @@ exports.readProduct = async function readProduct(product_id, page, count) {
 // This is where we will mark reviews as helpful or reported based on what's entered
 exports.markHelpful = async function markHelpful(review_id) {
   // will update the count of helpfulness by 1 based on review_id
-  const query = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = $1`;
+  const query = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE review_id = $1`;
   const queryArgs = [review_id];
 
   const res = await client.query(query, queryArgs);
@@ -151,7 +214,7 @@ exports.markHelpful = async function markHelpful(review_id) {
 
 exports.markReported = async function markReported(review_id) {
   // will change the reported column from false to true
-  const query = `UPDATE reviews SET reported = TRUE WHERE id = $1`;
+  const query = `UPDATE reviews SET reported = TRUE WHERE review_id = $1`;
   const queryArgs = [review_id];
 
   const res = await client.query(query, queryArgs);

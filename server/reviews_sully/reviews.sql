@@ -71,7 +71,7 @@ DELIMITER ','
 CSV Header;
 
 
--- Allowing for incrementing upon inserting
+-- Allowing for incrementing after copying
 
 SELECT setval('characteristic_reviews_id_seq', (SELECT MAX(id) from "characteristic_reviews"));
 
@@ -80,3 +80,7 @@ SELECT setval('characteristics_id_seq', (SELECT MAX(id) from "characteristics"))
 SELECT setval('reviews_id_seq', (SELECT MAX(id) from "reviews"));
 
 SELECT setval('photos_id_seq', (SELECT MAX(id) from "photos"));
+
+-- Alter column named id in reviews table to be reviews_id
+ALTER TABLE reviews
+RENAME COLUMN id TO review_id;
