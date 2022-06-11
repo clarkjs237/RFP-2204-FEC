@@ -187,9 +187,101 @@ exports.readProduct = async function readProduct(product_id, page, count, sort) 
   return reviews_arr;
 }
 
+// Create the ratings and recommended object for meta
+async function ratingsAndRecommendedObjectCreator(product_id) {
+
+  const query = `
+    SELECT rating, recommend FROM reviews
+    WHERE product_id = ${product_id} AND reported = FALSE
+  `;
+
+  const res = await client.query(query);
+
+  const ratingsObj = {"1": "0", "2": "0", "3": "0", "4": "0", "5":"0"};
+  const recommendObj = {"false": "0", "true": "0"};
+  res.rows.forEach((row) => {
+    // Increase the count of each rating, and re-stringify it
+    ratingsObj[row.rating] = (parseInt(ratingsObj[row.rating]) + 1).toString();
+    recommendObj[row.recommend] = (parseInt(recommendObj[row.recommend]) + 1).toString();
+  })
+
+  return { ratingsObj, recommendObj };
+}
+
+async function characteristicObjectCreator(product_id) {
+  // This compares the characteristic reviews against reviews to exclude reviews that
+  // were reported and only returns the characteristic id and the value.
+  // It also joins a third table, characteristics so that we know exactly which is which
+  const query = `
+    SELECT characteristic_reviews.characteristic_id, characteristic_reviews.value, characteristics.name
+    FROM reviews
+    INNER JOIN characteristic_reviews
+    ON reviews.review_id = characteristic_reviews.review_id
+    INNER JOIN characteristics
+    ON characteristic_reviews.characteristic_id = characteristics.id
+    WHERE reviews.product_id = ${product_id} and reported = FALSE ORDER BY 1;
+  `;
+
+  const res = await client.query(query);
+
+  const output = {};
+
+  // I need to get the average of all of these numbers. This means I need to keep track of
+  // the count for each one of these.
+  // I think I'll make a total count and create a counter that will increment
+  // then take the average and delete the counter property from the object
+  res.rows.forEach((review) => {
+    if (!output[review.name]) {
+      // this isn't in the output yet, so create the object
+      output[review.name] = {
+        id: review.characteristic_id,
+        value: review.value,
+        count: 1
+      }
+    } else {
+      // increase the value and the count
+      output[review.name].value += review.value;
+      output[review.name].count += 1;
+    }
+  })
+
+  // Getting the average value and deleting count column
+  Object.keys(output).forEach((name) => {
+    output[name].value = (output[name].value / output[name].count).toString();
+    delete output[name].count;
+  })
+
+
+  return output;
+}
+
 // Get the meta reviews for product id
-exports.readProductMeta = async function readProductMeta(){
-  console.log('hello');
+exports.readProductMeta = async function readProductMeta(product_id){
+  // Need the await keyword if I want that function to execute first
+  const output = {
+    product_id: product_id.toString(),
+    ratings: {},
+    recommended: {},
+    characteristics: {}
+  }
+  const {ratingsObj, recommendObj} = await ratingsAndRecommendedObjectCreator(product_id);
+  console.log(ratingsObj);
+  console.log(recommendObj);
+
+  // Okay so now I need to figure out the characteristics
+  // I need to use the product_id
+  // I need to figure out how to exclude the reported reviews
+  // I think this should be a join.
+  // I only want 12 rows for the example im using, not 13
+  const characteristicsObj = await characteristicObjectCreator(product_id);
+  console.log(characteristicsObj);
+
+  output.ratings = ratingsObj;
+  output.recommended = recommendObj;
+  output.characteristics = characteristicsObj;
+
+  console.log(output)
+  return output;
 }
 
 

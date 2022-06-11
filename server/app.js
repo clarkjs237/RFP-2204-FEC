@@ -20,7 +20,8 @@ const {
   addReview,
   markHelpful,
   markReported,
-  readProduct} = require('./reviews_sully/db');
+  readProduct,
+  readProductMeta } = require('./reviews_sully/db');
 
 
 // ---------------------------------------
@@ -39,55 +40,6 @@ app.post('/reviews', (req, res) => {
   .then(() => res.sendStatus(201))
   .catch((err) => console.error(err))
 })
-
-
-// {
-//   "product": "2",
-//   "page": 0,
-//   "count": 5,
-//   "results": [
-//     {
-//       "review_id": 5,
-//       "rating": 3,
-//       "summary": "I'm enjoying wearing these shades",
-//       "recommend": false,
-//       "response": null,
-//       "body": "Comfortable and practical.",
-//       "date": "2019-04-14T00:00:00.000Z",
-//       "reviewer_name": "shortandsweeet",
-//       "helpfulness": 5,
-//       "photos": [{
-//           "id": 1,
-//           "url": "urlplaceholder/review_5_photo_number_1.jpg"
-//         },
-//         {
-//           "id": 2,
-//           "url": "urlplaceholder/review_5_photo_number_2.jpg"
-//         },
-//         // ...
-//       ]
-//     },
-
-
-// From reviews_arr
-// [
-//   {
-//       "review_id": 5774947,
-//       "rating": 1,
-//       "summary": "Odio consequatur atque placeat.",
-//       "recommend": false,
-//       "response": null,
-//       "body": "Impedit eius velit. Et dolor quae quaerat totam voluptatem quam qui aut. Neque et veritatis consequuntur quidem at odio. Repellat earum praesentium a consequatur. Maxime assumenda qui rerum. Ullam esse molestias tempore quidem.",
-//       "date": "2021-02-03T12:51:48.000Z",
-//       "reviewer_name": "Pansy.Ritchie42",
-//       "helpfulness": 28,
-//       "photos": [
-//           {
-//               "id": 2742538,
-//               "url": "https://images.unsplash.com/photo-1511499008188-de491bbbae98?ixlib=rb-1.2.1&auto=format&fit=crop&w=988&q=80"
-//           }
-//       ]
-//   },
 
 
 //                  GET
@@ -122,9 +74,12 @@ app.get('/reviews', (req, res) => {
 })
 
 app.get('/reviews/meta', (req, res) => {
-  console.log(req.query); // this should only be product_id
+  let { product_id } = req.query;
 
-  res.send('hello reviews meta')
+  readProductMeta(product_id)
+  .then((results) => res.send(results))
+
+  // res.send('hello reviews meta')
 })
 
 

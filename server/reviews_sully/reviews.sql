@@ -81,6 +81,8 @@ SELECT setval('reviews_id_seq', (SELECT MAX(id) from "reviews"));
 
 SELECT setval('photos_id_seq', (SELECT MAX(id) from "photos"));
 
+
 -- Alter column named id in reviews table to be reviews_id
+
 ALTER TABLE reviews
 RENAME COLUMN id TO review_id;
