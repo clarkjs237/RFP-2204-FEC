@@ -14,7 +14,7 @@ CREATE TABLE questions (
 
 CREATE TABLE answers (
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  question_id integer NOT NULL REFERENCES questions,
+  question_id integer NOT NULL REFERENCES questions ON DELETE CASCADE,
   body text NOT NULL,
   date_written bigint NOT NULL,
   answerer_name text NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE answers (
 
 CREATE TABLE answers_photos (
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  answer_id integer NOT NULL REFERENCES answers,
+  answer_id integer NOT NULL REFERENCES answers ON DELETE CASCADE,
   url text NOT NULL
 );
 
