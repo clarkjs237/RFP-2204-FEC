@@ -68,7 +68,6 @@ app.get('/reviews', (req, res) => {
 
 // Marking reviews as helpful or reporting them
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  // res.send(req.params.review_id)
   // req.params.review_id is the id we want to update
   markHelpful(req.params.review_id)
   .then(() => res.sendStatus(204))
