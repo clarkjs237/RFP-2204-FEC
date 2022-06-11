@@ -264,23 +264,22 @@ exports.readProductMeta = async function readProductMeta(product_id){
     recommended: {},
     characteristics: {}
   }
+
   const {ratingsObj, recommendObj} = await ratingsAndRecommendedObjectCreator(product_id);
-  console.log(ratingsObj);
-  console.log(recommendObj);
 
   // Okay so now I need to figure out the characteristics
   // I need to use the product_id
   // I need to figure out how to exclude the reported reviews
   // I think this should be a join.
-  // I only want 12 rows for the example im using, not 13
-  const characteristicsObj = await characteristicObjectCreator(product_id);
-  console.log(characteristicsObj);
 
+
+  const characteristicsObj = await characteristicObjectCreator(product_id);
+
+  // Create the object that I want to send to client.
   output.ratings = ratingsObj;
   output.recommended = recommendObj;
   output.characteristics = characteristicsObj;
 
-  console.log(output)
   return output;
 }
 

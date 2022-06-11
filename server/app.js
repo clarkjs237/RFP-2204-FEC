@@ -75,15 +75,10 @@ app.get('/reviews', (req, res) => {
 
 app.get('/reviews/meta', (req, res) => {
   let { product_id } = req.query;
-
   readProductMeta(product_id)
   .then((results) => res.send(results))
-
-  // res.send('hello reviews meta')
+  .catch((err) => console.error(err))
 })
-
-
-
 
 
 //                  PUT
