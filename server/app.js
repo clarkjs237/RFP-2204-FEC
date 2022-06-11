@@ -72,20 +72,22 @@ app.post('/reviews', (req, res) => {
 // From reviews_arr
 // [
 //   {
-//     "id": 5774946,
-//     "product_id": 1000011,
-//     "rating": 4,
-//     "date": "2021-04-23T02:01:55.000Z",
-//     "summary": "Sed ut aut rerum veritatis quis veritatis tempore.",
-//     "body": "Quos provident voluptatem sed vel dolores. Provident porro assumenda totam. Tempore aperiam eos nam.",
-//     "recommend": true,
-//     "reported": false,
-//     "reviewer_name": "Gwen.Stracke68",
-//     "reviewer_email": "Aletha64@yahoo.com",
-//     "response": null,
-//     "helpfulness": 3,
-//     "photos": []
-// },
+//       "review_id": 5774947,
+//       "rating": 1,
+//       "summary": "Odio consequatur atque placeat.",
+//       "recommend": false,
+//       "response": null,
+//       "body": "Impedit eius velit. Et dolor quae quaerat totam voluptatem quam qui aut. Neque et veritatis consequuntur quidem at odio. Repellat earum praesentium a consequatur. Maxime assumenda qui rerum. Ullam esse molestias tempore quidem.",
+//       "date": "2021-02-03T12:51:48.000Z",
+//       "reviewer_name": "Pansy.Ritchie42",
+//       "helpfulness": 28,
+//       "photos": [
+//           {
+//               "id": 2742538,
+//               "url": "https://images.unsplash.com/photo-1511499008188-de491bbbae98?ixlib=rb-1.2.1&auto=format&fit=crop&w=988&q=80"
+//           }
+//       ]
+//   },
 
 
 //                  GET
@@ -98,17 +100,25 @@ app.get('/reviews', (req, res) => {
 
   // Set defaults of 1 for page and 5 for count
   // page = page || 0; // I want this to be 0 as default, but it's technically 1 when we return
-  // page = page - 1 || 0;
+  page = page || 0;
   count = count || 5;
   sort = sort || 'relevant'; // I think I may want to change this. default should just be id
 
-  readProduct(product_id, page - 1 || 0, count, sort)
-  .then((result) => {
-    res.send(result)
-    // res.send(result.photos_arr)
+  let output = {
+    product: product_id.toString(),
+    page: parseInt(page),
+    count: parseInt(count),
+    results: []
+  }
+  readProduct(product_id, page, count, sort)
+  .then((results) => {
+    // add the results array to the output.results field
+    output.results = results;
+    // send this output
+    res.send(output);
   })
+  .catch((err) => console.error(err))
 
-  // res.send('hello reviews')
 })
 
 app.get('/reviews/meta', (req, res) => {

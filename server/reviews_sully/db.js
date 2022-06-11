@@ -118,13 +118,8 @@ exports.addReview = async function addReview(review) {
   // characteristic_ids. Then we want to post to the characteristic_reviews table
   // with the characteristic_id, review_id, and value associated. All good!
   Object.keys(characteristics).forEach((char_id) => {
-    // console.log(char_id)
-    // console.log(characteristics[char_id])
     addToCharReviews(char_id, review_id, characteristics[char_id])
   })
-
-  // I think this is good for now. Eventually, I think I'll need to reference the id and product_id to get the name
-  // of the characteristic for reviews/meta but this is a good start
 }
 
 
@@ -149,7 +144,10 @@ exports.readProduct = async function readProduct(product_id, page, count, sort) 
   // Will order by id as default unless sort is helpful or newest or relevant
   // Maybe relevant is the default and should just be id?
   const query = `
-    SELECT review_id, rating, summary, recommend, response, body, "date", reviewer_name, helpfulness FROM reviews
+    SELECT review_id, rating, summary,
+    recommend, response, body, "date",
+    reviewer_name, helpfulness
+    FROM reviews
     WHERE product_id = ${product_id} AND reported = FALSE
     ${sort_parameter}
     OFFSET ${page * count}
@@ -173,18 +171,14 @@ exports.readProduct = async function readProduct(product_id, page, count, sort) 
   // https://advancedweb.hu/how-to-use-async-functions-with-array-map-in-javascript/
   const photos_arr = await Promise.all(reviews_arr.map(async (review) => {
     const photo_query = `
-      SELECT id,url FROM photos WHERE review_id = ${review.id}
+      SELECT id,url FROM photos WHERE review_id = ${review.review_id}
     `;
     let photo_res = await client.query(photo_query);
     photo_res = photo_res.rows;
     return photo_res;
   }))
 
-  // console.log(photo_arr);
-  // Need to assign it to variable bc destructing doesn't like res.rows
-
-  // const reviews_arr = res.rows;
-
+  // Add the photos associated with each review
   reviews_arr.forEach((review, index) => {
     // review.photos = 'THIS IS PHOTOS'
     review.photos = photos_arr[index];
