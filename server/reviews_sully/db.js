@@ -89,7 +89,7 @@ exports.addReview = async function addReview(review) {
       reviewer_email
     )
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    RETURNING id;`;
+    RETURNING review_id;`;
 
   // Get the current datetime in ISOString format, like we want
   // insert it to the array of object values
@@ -99,7 +99,7 @@ exports.addReview = async function addReview(review) {
   const res = await client.query(query, queryArgs);
 
   // Bc we are returning the id, we want to get the id to use for our photos table
-  const review_id = res.rows[0].id;
+  const review_id = res.rows[0].review_id;
   // I also want to add to the photos table, characteristics table and char_reviews as well
   // Loop through the photos and add each to the photos table
   photos.forEach((url) => addToPhotos(review_id, url));
