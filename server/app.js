@@ -8,8 +8,12 @@ const port = 8080;
 
 app.get('/qa/questions', (req, res, next) => {
   db.query(
-    'SELECT * FROM questions WHERE product_id = $1',
-    [req.query.product_id],
+    `
+    SELECT * FROM questions
+    WHERE product_id = $1 AND reported = false
+    ORDER BY helpful DESC LIMIT $2
+    `,
+    [req.query.product_id, req.query.count],
     (err, result) => {
       if (err) {
         return next(err);
