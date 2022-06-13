@@ -35,7 +35,6 @@ const {
 // Posting to reviews endpoint
 // THIS ADDS A NEW REVIEW
 app.post('/reviews', (req, res) => {
-  // console.log(req.body); returning this correctly
   addReview(req.body)
   .then(() => res.sendStatus(201))
   .catch((err) => console.error(err))
@@ -56,21 +55,9 @@ app.get('/reviews', (req, res) => {
   count = count || 5;
   sort = sort || 'relevant'; // I think I may want to change this. default should just be id
 
-  let output = {
-    product: product_id.toString(),
-    page: parseInt(page),
-    count: parseInt(count),
-    results: []
-  }
   readProduct(product_id, page, count, sort)
-  .then((results) => {
-    // add the results array to the output.results field
-    output.results = results;
-    // send this output
-    res.send(output);
-  })
+  .then((results) => res.send(results))
   .catch((err) => console.error(err))
-
 })
 
 app.get('/reviews/meta', (req, res) => {

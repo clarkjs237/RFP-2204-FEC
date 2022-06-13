@@ -71,10 +71,9 @@ exports.addReview = async function addReview(review) {
   // Need to put quotes around date bc it is a reserved word
 
   // GONNA HAVE TO DO THE SAME THING IN PHOTOS
-  // This creates a reviewObj with everything but photos
+  // This creates a reviewObj with everything but photos and characteristics
   // and create a variable photos with the value associated
   const {photos, characteristics, ...reviewObj} = review;
-
 
   const query = `
     INSERT INTO
@@ -94,7 +93,16 @@ exports.addReview = async function addReview(review) {
   // Get the current datetime in ISOString format, like we want
   // insert it to the array of object values
   const newDate = new Date().toISOString();
-  const queryArgs = [reviewObj.product_id, reviewObj.rating, newDate, reviewObj.summary, reviewObj.body, reviewObj.recommend, reviewObj.name, reviewObj.email];
+  const queryArgs = [
+    reviewObj.product_id,
+    reviewObj.rating,
+    newDate,
+    reviewObj.summary,
+    reviewObj.body,
+    reviewObj.recommend,
+    reviewObj.name,
+    reviewObj.email
+  ];
   // Creat the query using the psql statement and the arguments
   const res = await client.query(query, queryArgs);
 
@@ -180,11 +188,18 @@ exports.readProduct = async function readProduct(product_id, page, count, sort) 
 
   // Add the photos associated with each review
   reviews_arr.forEach((review, index) => {
-    // review.photos = 'THIS IS PHOTOS'
     review.photos = photos_arr[index];
   })
 
-  return reviews_arr;
+  // CREATE THE OUTPUT OBJECT
+  const output = {
+    product: product_id.toString(),
+    page: parseInt(page),
+    count: parseInt(count),
+    results: reviews_arr
+  }
+
+  return output;
 }
 
 // Create the ratings and recommended object for meta
@@ -307,5 +322,7 @@ exports.markReported = async function markReported(review_id) {
 }
 
 
-
+// Supposedly, the way I want to do this is to leave the connection open.
+// Connecting and disconnecting from the pool each is unneccessary.
+// https://stackoverflow.com/questions/50497583/when-to-disconnect-and-when-to-end-a-pg-client-or-pool
 // await client.end();
