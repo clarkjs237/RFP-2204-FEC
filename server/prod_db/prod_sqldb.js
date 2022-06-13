@@ -8,7 +8,7 @@ const Promise = require('bluebird');
 // const DB_USER = process.env.DB_USER
 
 const connection = mysql.createConnection({
-  host: 'local',
+  host: 'localhost',
   user: 'root',
   password: '',
 });

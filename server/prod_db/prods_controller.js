@@ -6,17 +6,13 @@ const db = require('./prod_sqldb');
 
 module.exports = {
   // Get overview product
-  getProductData: (req, res) => {
+  getProductData: (productID) => {
     let product = {};
     let features = [];
 
-    // let params = [
-    //   req.body.product.id
-    // ];
-
     // get product object
     db.queryAsync(
-      'SELECT JSON_OBJECT("id", id, "name", name, "slogan", slogan, "description", description, "category", category, "default_price", default_price) FROM product WHERE product.id = 1;'
+      `SELECT JSON_OBJECT("id", id, "name", name, "slogan", slogan, "description", description, "category", category, "default_price", default_price) FROM product WHERE product.id = ${productID};`
     )
       .then((results) => {
         product = results;
@@ -24,31 +20,24 @@ module.exports = {
       // get features array
       .then(() =>
         db.queryAsync(
-          'SELECT JSON_ARRAYAGG(JSON_OBJECT ("feature", feature, "value", value)) FROM features WHERE product_id = 1;'
+          `SELECT JSON_ARRAYAGG(JSON_OBJECT ("feature", feature, "value", value)) FROM features WHERE product_id = ${productID}`
         )
       )
       .then((results) => {
         features = results;
         product.features = features;
-        res.status(200).json(product);
+        return product;
       })
-      .cath((err) =>
-        res.status(500).json('Something went wrong fetching this product...')
-      );
+      .catch((err) => console.log(err));
   },
 
-  getStyles: (req, res) => {
+  getStyles: (productID) => {
     const productStyles = {
-      // update product id to be req.body.id
-      product_id: '1',
+      product_id: productID,
     };
 
-    // let params = [
-    //   /* req.body.product.id */
-    // ]
-
     db.queryAsync(
-      'SELECT JSON_OBJECT("style_id", id, "name", name, "original_price", original_price, "sale_price", sale_price, "default_style", default_style) FROM styles WHERE styles.product_id = 1;'
+      `SELECT JSON_OBJECT("style_id", id, "name", name, "original_price", original_price, "sale_price", sale_price, "default_style", default_style) FROM styles WHERE styles.product_id = ${productID};`
     )
       .then((results) => {
         productStyles.results = results;
@@ -75,34 +64,20 @@ module.exports = {
                 .then((skuInfo) => {
                   productStyles.results[i].styled_id.skus[skuID] = skuInfo;
                 })
-                .cath((err) =>
-                  res
-                    .status(500)
-                    .json('Something went wrong fetching this product...')
-                );
+                .cath((err) => console.log(err));
             });
           });
         }
       })
-      .then(() => {
-        res.status(200).json(productStyles);
-      })
-      .cath((err) =>
-        res.status(500).json('Something went wrong fetching this product...')
-      );
+      .then(() => productStyles)
+      .cath((err) => console.log(err));
   },
 
-  getRelated: (req, res) => {
-    // productID = req.body
-
+  getRelated: (productID) => {
     db.queryAsync(
-      `SELECT JSON_ARRAYAGG(related_product_id) FROM related WHERE current_product_id=${productID};`
+      `SELECT JSON_ARRAYAGG(related_product_id) FROM related WHERE current_product_id= ${productID};`
     )
-      .then((results) => {
-        res.status(200).json(results);
-      })
-      .cath((err) =>
-        res.status(500).json('Something went wrong fetching this product...')
-      );
+      .then((results) => results)
+      .cath((err) => console.log(err));
   },
 };
