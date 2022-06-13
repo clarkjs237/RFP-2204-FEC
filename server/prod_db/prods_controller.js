@@ -10,9 +10,9 @@ module.exports = {
     let product = {};
     let features = [];
 
-    let params = [
-      /* req.body.product.id */
-    ];
+    // let params = [
+    //   req.body.product.id
+    // ];
 
     // get product object
     db.queryAsync(
@@ -83,6 +83,23 @@ module.exports = {
             });
           });
         }
+      })
+      .then(() => {
+        res.status(200).json(productStyles);
+      })
+      .cath((err) =>
+        res.status(500).json('Something went wrong fetching this product...')
+      );
+  },
+
+  getRelated: (req, res) => {
+    // productID = req.body
+
+    db.queryAsync(
+      `SELECT JSON_ARRAYAGG(related_product_id) FROM related WHERE current_product_id=${productID};`
+    )
+      .then((results) => {
+        res.status(200).json(results);
       })
       .cath((err) =>
         res.status(500).json('Something went wrong fetching this product...')
