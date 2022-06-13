@@ -141,9 +141,9 @@ exports.addReview = async function addReview(review) {
 exports.readProduct = async function readProduct(product_id, page, count, sort) {
   // Figure out how to sort this list
   let sort_parameter;
-  if (sort === 'relevant') {
+  if (sort === 'relevant' || sort === 'relevance') {
     sort_parameter = '';
-  } else if (sort === 'helpful') {
+  } else if (sort === 'helpful' || sort === 'helpfulness') {
     sort_parameter = 'ORDER BY helpfulness DESC';
   } else {
     sort_parameter = 'ORDER BY date DESC';

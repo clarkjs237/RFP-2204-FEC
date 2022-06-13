@@ -38,7 +38,6 @@ router.post('/', (req, res) => {
 
 // This is how I will handle the requests for the product data
 router.get('/', (req, res) => {
-  // console.log(req.query)
   let {product_id, page, count, sort} = req.query;
 
   // Set defaults of 1 for page and 5 for count
