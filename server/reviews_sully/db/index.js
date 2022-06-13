@@ -10,15 +10,18 @@ const config = {
   port: 5432
 }
 
-// Create a new pg.Client instance
-const client = new pg.Client(config);
+// From node-postgres website:
+// "If you're working on a web application or other software which makes frequent queries you'll want to use a connection pool."
+// https://node-postgres.com/features/pooling
 
-// Async connect to the client
+const pool = new pg.Pool(config);
+
+// Async connect to the pool
 async function connector() {
-  await client.connect();
+  await pool.connect();
 }
 
-// Connect to the client
+// Connect to the pool
 connector();
 
 // ---------------------------------------
@@ -40,7 +43,7 @@ async function addToPhotos(review_id, url) {
     VALUES ($1, $2)`;
 
   const queryArgs = [review_id, url];
-  await client.query(query, queryArgs);
+  await pool.query(query, queryArgs);
 }
 
 // Adds to the characteristic_reviews table
@@ -59,7 +62,7 @@ async function addToCharReviews(char_id, review_id, value) {
 
   const queryArgs = [parseInt(char_id), review_id, value];
 
-  await client.query(query, queryArgs);
+  await pool.query(query, queryArgs);
 }
 
 
@@ -103,7 +106,7 @@ exports.addReview = async function addReview(review) {
     reviewObj.email
   ];
   // Creat the query using the psql statement and the arguments
-  const res = await client.query(query, queryArgs);
+  const res = await pool.query(query, queryArgs);
 
   // Bc we are returning the id, we want to get the id to use for our photos table
   const review_id = res.rows[0].review_id;
@@ -163,7 +166,7 @@ exports.readProduct = async function readProduct(product_id, page, count, sort) 
 
   // This looks good for now. We need to also get photos and remove reviewer_email
   // and then reorganize things
-  const res = await client.query(query);
+  const res = await pool.query(query);
   const reviews_arr = res.rows;
 
   // I need to go through res.rows and get the photos that are associated with this
@@ -172,7 +175,7 @@ exports.readProduct = async function readProduct(product_id, page, count, sort) 
   // WOW
   // I needed to asynchronously get the photos based on review_id and map them
   // to an array. This is a really cool thing
-  // For the journal, when I didn't use that await line before client.query, the
+  // For the journal, when I didn't use that await line before pool.query, the
   // array returned was full of undefined values. Which makes sense bc it wasn't
   // waiting for the async call to finish first
   // https://advancedweb.hu/how-to-use-async-functions-with-array-map-in-javascript/
@@ -180,7 +183,7 @@ exports.readProduct = async function readProduct(product_id, page, count, sort) 
     const photo_query = `
       SELECT id,url FROM photos WHERE review_id = ${review.review_id}
     `;
-    let photo_res = await client.query(photo_query);
+    let photo_res = await pool.query(photo_query);
     photo_res = photo_res.rows;
     return photo_res;
   }))
@@ -209,7 +212,7 @@ async function ratingsAndRecommendedObjectCreator(product_id) {
     WHERE product_id = ${product_id} AND reported = FALSE
   `;
 
-  const res = await client.query(query);
+  const res = await pool.query(query);
 
   const ratingsObj = {"1": "0", "2": "0", "3": "0", "4": "0", "5":"0"};
   const recommendObj = {"false": "0", "true": "0"};
@@ -236,7 +239,7 @@ async function characteristicObjectCreator(product_id) {
     WHERE reviews.product_id = ${product_id} and reported = FALSE ORDER BY 1;
   `;
 
-  const res = await client.query(query);
+  const res = await pool.query(query);
 
   const output = {};
 
@@ -289,7 +292,7 @@ exports.readProductMeta = async function readProductMeta(product_id){
 
   const characteristicsObj = await characteristicObjectCreator(product_id);
 
-  // Create the object that I want to send to client.
+  // Create the object that I want to send to pool.
   output.ratings = ratingsObj;
   output.recommended = recommendObj;
   output.characteristics = characteristicsObj;
@@ -307,7 +310,7 @@ exports.markHelpful = async function markHelpful(review_id) {
   const query = `UPDATE reviews SET helpfulness = helpfulness + 1 WHERE review_id = $1`;
   const queryArgs = [review_id];
 
-  const res = await client.query(query, queryArgs);
+  const res = await pool.query(query, queryArgs);
   return res;
 }
 
@@ -316,12 +319,12 @@ exports.markReported = async function markReported(review_id) {
   const query = `UPDATE reviews SET reported = TRUE WHERE review_id = $1`;
   const queryArgs = [review_id];
 
-  const res = await client.query(query, queryArgs);
+  const res = await pool.query(query, queryArgs);
   return res;
 }
 
 
 // Supposedly, the way I want to do this is to leave the connection open.
 // Connecting and disconnecting from the pool each is unneccessary.
-// https://stackoverflow.com/questions/50497583/when-to-disconnect-and-when-to-end-a-pg-client-or-pool
-// await client.end();
+// https://stackoverflow.com/questions/50497583/when-to-disconnect-and-when-to-end-a-pg-pool-or-pool
+// await pool.end();
