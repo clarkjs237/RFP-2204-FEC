@@ -86,3 +86,10 @@ SELECT setval('photos_id_seq', (SELECT MAX(id) from "photos"));
 
 ALTER TABLE reviews
 RENAME COLUMN id TO review_id;
+
+-- Add indexing to reviews table to speed things up
+
+CREATE INDEX review_index ON reviews (product_id);
+CREATE INDEX char_reviews_index ON characteristic_reviews (review_id, characteristic_id);
+CREATE INDEX chars_index ON characteristics (id);
+CREATE INDEX photos_index ON photos (review_id);
