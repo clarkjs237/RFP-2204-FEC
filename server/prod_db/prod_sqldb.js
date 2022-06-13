@@ -8,10 +8,9 @@ const Promise = require('bluebird');
 // const DB_USER = process.env.DB_USER
 
 const connection = mysql.createConnection({
-  host: '127.0.0.1',
+  host: 'local',
   user: 'root',
   password: '',
-  port: '3306',
 });
 
 const db = Promise.promisifyAll(connection, { multiArgs: true });
@@ -51,9 +50,9 @@ db.connectAsync()
         id INT UNIQUE,
         product_id INT NULL DEFAULT NULL,
         name VARCHAR(100) NULL DEFAULT NULL,
-        sale_price DECIMAL(6) NULL DEFAULT NULL,
-        original_price DECIMAL(6, 2) NULL DEFAULT NULL,
-        default_style BOOLEAN NULL DEFAULT NULL,
+        sale_price DECIMAL(6, 2) NULL DEFAULT NULL,
+        original_price DECIMAL(11, 2) NULL DEFAULT NULL,
+        default_style BOOLEAN,
         PRIMARY KEY (id),
         FOREIGN KEY (product_id) REFERENCES product (id)
       );`
