@@ -16,7 +16,6 @@ const client = new pg.Client(config);
 // Async connect to the client
 async function connector() {
   await client.connect();
-  // await client.end();
 }
 
 // Connect to the client
