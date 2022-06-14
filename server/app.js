@@ -31,7 +31,8 @@ app.get('/qa/questions', (req, res, next) => {
       product_id = $1
       AND reported = FALSE
     ORDER BY date_written DESC, id ASC
-    LIMIT $2) questions
+    LIMIT $2
+    OFFSET $3) questions
     LEFT JOIN (
       SELECT
         *
@@ -40,7 +41,7 @@ app.get('/qa/questions', (req, res, next) => {
       WHERE
         reported = FALSE) answers ON questions.id = answers.question_id
     `,
-    [req.query.product_id, req.query.count],
+    [req.query.product_id, req.query.count, req.query.page],
     (err, result) => {
       if (err) {
         return next(err);
