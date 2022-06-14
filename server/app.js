@@ -14,7 +14,7 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-// ROUTING FOR SULLY ROUTES
-const mountReviewRoutes = require('./reviews_sully/routes');
+// ROUTING FOR ALL ROUTES
+const mountAllRoutes = require('./router');
 
-mountReviewRoutes(app);
+mountAllRoutes(app);
