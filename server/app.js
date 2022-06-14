@@ -92,6 +92,42 @@ app.get('/qa/questions', (req, res, next) => {
   );
 });
 
+app.get('/qa/questions/:question_id/answers', (req, res, next) => {
+  db.query(
+    `
+    SELECT
+      id AS answer_id,
+      body,
+      date_written AS date,
+      answerer_name,
+      helpful AS helpfulness
+    FROM
+      answers
+    WHERE
+      question_id = $1
+      AND reported = FALSE
+    ORDER BY
+      date_written
+    LIMIT $2
+    OFFSET $3
+    `,
+    [req.params.question_id, req.query.count = 5, req.query.page = 0],
+    (err, result) => {
+      if (err) {
+        return next(err);
+      }
+      const data = {
+        question: req.params.question_id,
+        page: req.query.page,
+        count: req.query.count,
+        results: result.rows,
+      };
+      res.status(200).send(data);
+      return null;
+    }
+  );
+});
+
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.listen(port, () => {
