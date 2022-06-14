@@ -41,7 +41,7 @@ app.get('/qa/questions', (req, res, next) => {
       WHERE
         reported = FALSE) answers ON questions.id = answers.question_id
     `,
-    [req.query.product_id, req.query.count, req.query.page],
+    [req.query.product_id, req.query.count = 5, req.query.page = 0],
     (err, result) => {
       if (err) {
         return next(err);
