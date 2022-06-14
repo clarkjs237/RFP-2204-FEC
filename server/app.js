@@ -21,7 +21,9 @@ app.get('/qa/questions', (req, res, next) => {
     answers.body,
     answers.date_written AS date,
     answers.answerer_name,
-    answers.helpful AS helpfulness
+    answers.helpful AS helpfulness,
+    answers_photos.id AS photo_id,
+    answers_photos.url
   FROM (
     SELECT
       *
@@ -40,8 +42,9 @@ app.get('/qa/questions', (req, res, next) => {
         answers
       WHERE
         reported = FALSE) answers ON questions.id = answers.question_id
+    LEFT JOIN answers_photos ON answers.id = answers_photos.answer_id
     `,
-    [req.query.product_id, req.query.count = 5, req.query.page = 0],
+    [req.query.product_id, (req.query.count = 5), (req.query.page = 0)],
     (err, result) => {
       if (err) {
         return next(err);
@@ -61,6 +64,8 @@ app.get('/qa/questions', (req, res, next) => {
           date,
           answerer_name,
           helpfulness,
+          photo_id,
+          url,
         } = result.rows[i];
         if (question_id !== previous) {
           questions.push({
@@ -74,14 +79,19 @@ app.get('/qa/questions', (req, res, next) => {
           });
         }
         previous = question_id;
-        if(id) {
-          questions[questions.length - 1].answers[id] = {
-            id,
-            body,
-            date,
-            answerer_name,
-            helpfulness,
-            photos: [],
+        if (id) {
+          if (!questions[questions.length - 1].answers.hasOwnProperty(id)) {
+            questions[questions.length - 1].answers[id] = {
+              id,
+              body,
+              date,
+              answerer_name,
+              helpfulness,
+              photos: [],
+            };
+          }
+          if (photo_id) {
+            questions[questions.length - 1].answers[id].photos.push(url);
           }
         }
       }
@@ -112,7 +122,7 @@ app.get('/qa/questions/:question_id/answers', (req, res, next) => {
     LIMIT $2
     OFFSET $3
     `,
-    [req.params.question_id, req.query.count = 5, req.query.page = 0],
+    [req.params.question_id, (req.query.count = 5), (req.query.page = 0)],
     (err, result) => {
       if (err) {
         return next(err);
