@@ -172,6 +172,37 @@ app.post('/qa/questions', (req, res, next) => {
   );
 });
 
+app.post('/qa/questions/:question_id/answers', (req, res, next) => {
+  const { question_id } = req.params;
+  const { body, name, email, photos } = req.body;
+  db.query(
+    `
+    WITH inserted AS (
+      INSERT INTO answers (question_id, body, answerer_name, answerer_email)
+          VALUES ($1, $2, $3, $4)
+        RETURNING
+          id)
+        INSERT INTO answers_photos (answer_id, url)
+        SELECT
+          *
+        FROM (
+          SELECT
+            id AS answer_id
+          FROM
+            inserted) inserted
+        CROSS JOIN unnest($5::text[]) url
+    `,
+    [question_id, body, name, email, photos],
+    (err, result) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).send('Created');
+      return null;
+    }
+  );
+});
+
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.listen(port, () => {
