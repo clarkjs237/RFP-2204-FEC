@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const Promise = require('bluebird');
 
 // const DB_HOST = process.env.DB_HOST
-// const DB_NAME = process.env.DB_NAME
+const DB_NAME = 'products';
 // const DB_PASS = process.env.DB_PASS
 // const DB_USER = process.env.DB_USER
 
@@ -17,8 +17,8 @@ const db = Promise.promisifyAll(connection, { multiArgs: true });
 
 db.connectAsync()
   .then(() => console.log(`Connected to MySQL as id: ${db.threadId}`))
-  .then(() => db.queryAsync(`CREATE DATABASE IF NOT EXISTS products`)) // update `products` to ${DB_NAME};
-  .then(() => db.queryAsync(`USE products`)) // update `products` to ${DB_NAME};
+  .then(() => db.queryAsync(`CREATE DATABASE IF NOT EXISTS ${DB_NAME}`)) // update `products` to ${DB_NAME};
+  .then(() => db.queryAsync(`USE ${DB_NAME}`)) // update `products` to ${DB_NAME};
   .then(() =>
     db.queryAsync(
       `CREATE TABLE IF NOT EXISTS product (

@@ -16,7 +16,7 @@ export default function RelatedItems({ curProd, setCurProd }) {
   const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
   useEffect(() => {
     axios
-      .get(`${url}products/${curProd.id}/related`, {
+      .get(`products/${curProd.id}/related`, {
         headers: { Authorization: config.TOKEN },
       })
       .then((results) =>

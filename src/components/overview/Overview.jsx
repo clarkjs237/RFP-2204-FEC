@@ -41,22 +41,16 @@ export default function Overview({ setLocalCart, setShowDrawer, productID }) {
       styles: false,
       reviews: false,
     });
-    axios
-      .get(`${url}products/${productID}`, {
-        headers: { Authorization: config.TOKEN },
-      })
-      .then((res) => {
-        setProductData(res.data);
-        setIsLoaded((prev) => ({
-          ...prev,
-          product: true,
-        }));
-      });
+    axios.get(`http://localhost:8080/products/${productID}`).then((res) => {
+      setProductData(res.data);
+      setIsLoaded((prev) => ({
+        ...prev,
+        product: true,
+      }));
+    });
 
     axios
-      .get(`${url}products/${productID}/styles`, {
-        headers: { Authorization: config.TOKEN },
-      })
+      .get(`http://localhost:8080/products/${productID}/styles`)
       .then((res) => {
         setProductStylesData(res.data);
         setIsLoaded((prev) => ({
