@@ -225,6 +225,28 @@ app.put('/qa/questions/:question_id/helpful', (req, res, next) => {
   );
 });
 
+app.put('/qa/questions/:answer_id/helpful', (req, res, next) => {
+  const { answer_id } = req.params;
+  db.query(
+    `
+    UPDATE
+      answers
+    SET
+      helpful = helpful + 1
+    WHERE
+      id = $1
+    `,
+    [question_id],
+    (err, result) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(204).send('Updated');
+      return null;
+    }
+  );
+});
+
 app.use(express.static(path.join(__dirname, '../dist')));
 
 app.listen(port, () => {
