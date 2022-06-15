@@ -7,6 +7,18 @@ const app = express();
 const port = 8080;
 
 app.get('/qa/questions', (req, res, next) => {
+  let count;
+  let page;
+  if (req.query.count) {
+    count = req.query.count;
+  } else {
+    count = 5;
+  }
+  if (req.query.page) {
+    page = (req.query.page - 1) * count;
+  } else {
+    page = 0;
+  }
   db.query(
     `
     SELECT
@@ -32,7 +44,7 @@ app.get('/qa/questions', (req, res, next) => {
     WHERE
       product_id = $1
       AND reported = FALSE
-    ORDER BY date_written DESC, id ASC
+    ORDER BY id ASC
     LIMIT $2
     OFFSET $3) questions
     LEFT JOIN (
@@ -43,8 +55,9 @@ app.get('/qa/questions', (req, res, next) => {
       WHERE
         reported = FALSE) answers ON questions.id = answers.question_id
     LEFT JOIN answers_photos ON answers.id = answers_photos.answer_id
+    ORDER BY questions.id ASC
     `,
-    [req.query.product_id, (req.query.count = 5), (req.query.page = 0)],
+    [req.query.product_id, count, page],
     (err, result) => {
       if (err) {
         return next(err);
@@ -120,9 +133,9 @@ app.get('/qa/questions/:question_id/answers', (req, res, next) => {
     ORDER BY
       date_written
     LIMIT $2
-    OFFSET $3
+    OFFSET ($3 - 1) * 100
     `,
-    [req.params.question_id, (req.query.count = 5), (req.query.page = 0)],
+    [req.params.question_id, (req.query.count = 5), (req.query.page = 1)],
     (err, result) => {
       if (err) {
         return next(err);
