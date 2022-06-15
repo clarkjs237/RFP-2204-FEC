@@ -6,6 +6,8 @@ const db = require('./db');
 const app = express();
 const port = 8080;
 
+app.use(express.json());
+
 app.get('/qa/questions', (req, res, next) => {
   let count;
   let page;
@@ -147,6 +149,24 @@ app.get('/qa/questions/:question_id/answers', (req, res, next) => {
         results: result.rows,
       };
       res.status(200).send(data);
+      return null;
+    }
+  );
+});
+
+app.post('/qa/questions', (req, res, next) => {
+  const { product_id, body, name, email } = req.body;
+  db.query(
+    `
+    INSERT INTO questions (product_id, body, asker_name, asker_email)
+      VALUES ($1, $2, $3, $4)
+    `,
+    [product_id, body, name, email],
+    (err, result) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).send('Created');
       return null;
     }
   );
