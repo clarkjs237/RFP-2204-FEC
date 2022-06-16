@@ -24,13 +24,13 @@ connector();
 // ex:http://localhost:8080/reviews?product_id=1
 exports.getReview = async function getReview(product_id, page, count, sort) {
   // Start with relevance first -- handle in reviews.js controllers
-  let sort_parameter;
+  let sorted;
   if (sort === 'relevant' || sort === 'relevance') {
-    sort_parameter = '';
+    sorted = '';
   } else if (sort === 'helpful' || sort === 'helpfulness') {
-    sort_parameter = 'ORDER BY helpfulness DESC';
+    sorted = 'ORDER BY helpfulness DESC';
   } else {
-    sort_parameter = 'ORDER BY date DESC';
+    sorted = 'ORDER BY date DESC';
   }
 
   const query = `
@@ -38,7 +38,7 @@ exports.getReview = async function getReview(product_id, page, count, sort) {
     recommend, response, body, "date",
     reviewer_name, helpfulness FROM reviews
     WHERE product_id = ${product_id} AND reported = FALSE
-    ${sort_parameter}
+    ${sorted}
     OFFSET ${page * count}
     LIMIT ${count}
   `;
