@@ -24,40 +24,41 @@ app.get('/qa/questions', (req, res, next) => {
   db.query(
     `
     SELECT
-    questions.product_id,
-    questions.id AS question_id,
-    questions.body AS question_body,
-    questions.date_written AS question_date,
-    questions.asker_name,
-    questions.helpful AS question_helpfulness,
-    questions.reported,
-    answers.id,
-    answers.body,
-    answers.date_written AS date,
-    answers.answerer_name,
-    answers.helpful AS helpfulness,
-    answers_photos.id AS photo_id,
-    answers_photos.url
-  FROM (
-    SELECT
-      *
-    FROM
-      questions
-    WHERE
-      product_id = $1
-      AND reported = FALSE
-    ORDER BY id ASC
-    LIMIT $2
-    OFFSET $3) questions
-    LEFT JOIN (
+      questions.product_id,
+      questions.id AS question_id,
+      questions.body AS question_body,
+      questions.date_written AS question_date,
+      questions.asker_name,
+      questions.helpful AS question_helpfulness,
+      questions.reported,
+      answers.id,
+      answers.body,
+      answers.date_written AS date,
+      answers.answerer_name,
+      answers.helpful AS helpfulness,
+      answers_photos.id AS photo_id,
+      answers_photos.url
+    FROM (
       SELECT
         *
       FROM
-        answers
+        questions
       WHERE
-        reported = FALSE) answers ON questions.id = answers.question_id
-    LEFT JOIN answers_photos ON answers.id = answers_photos.answer_id
-    ORDER BY questions.id ASC
+        product_id = $1
+        AND reported = FALSE
+      ORDER BY
+        id ASC
+      LIMIT $2 OFFSET $3) questions
+      LEFT JOIN (
+        SELECT
+          *
+        FROM
+          answers
+        WHERE
+          reported = FALSE) answers ON questions.id = answers.question_id
+      LEFT JOIN answers_photos ON answers.id = answers_photos.answer_id
+    ORDER BY
+      questions.id ASC
     `,
     [req.query.product_id, count, page],
     (err, result) => {
