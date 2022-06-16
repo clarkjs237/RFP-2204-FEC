@@ -44,24 +44,24 @@ exports.getReview = async function getReview(product_id, page, count, sort) {
   `;
 
   const res = await pool.query(query);
-  const reviews_arr = res.rows;
+  const reviewArr = res.rows;
 
-  const photos_arr = await Promise.all(reviews_arr.map(async (review) => {
-    const photo_query = ` SELECT id,url FROM photos WHERE review_id = ${review.review_id} `;
-    let photoRes = await pool.query(photo_query);
+  const photosArr = await Promise.all(reviewArr.map(async (review) => {
+    const queryPhoto = ` SELECT id,url FROM photos WHERE review_id = ${review.review_id} `;
+    let photoRes = await pool.query(queryPhoto);
     photoRes = photoRes.rows;
     return photoRes;
   }))
 
-  reviews_arr.forEach((review, index) => {
-    review.photos = photos_arr[index];
+  reviewArr.forEach((review, index) => {
+    review.photos = photosArr[index];
   })
 
   const sentObj = {
     product: product_id.toString(),
     page: parseInt(page),
     count: parseInt(count),
-    results: reviews_arr
+    results: reviewArr
   }
 
   return sentObj;
