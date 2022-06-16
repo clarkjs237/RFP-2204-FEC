@@ -1,68 +1,70 @@
 const express = require('express');
 const path = require('path');
 
-// const db = require('./db');
-
 const app = express();
 const port = 8080;
 
+app.use(express.static(path.join(__dirname, '../dist')));
+
 app.use(express.json())
 
-const {
-  addReview, putHelpful, putReport, getReview, getMeta
-} = require('./db/index');
-// Need to look into routing options
-const router = express.Router();
-module.exports = router;
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
+
+const mountRoutes = require('./router');
+
+mountRoutes(app);
+
 
 // Controllers --> 5 needed as seen by API.
 
 // GET
-  router.get('/', (req, res) => {
-    console.log('Works')
-    getReview()
-  })
+// router.get('/', (req, res) => {
+//   console.log('Works')
+//   getReview()
+// })
 
-  router.get('/meta', (req, res) => {
-    getMeta()
-  })
-// POST
+// router.get('/meta', (req, res) => {
+//   getMeta()
+// })
+// // POST
 
-  // review
-  router.post('/', (req, res) => {
-    addReview(req.body)
-    .then(() => {
-      res.sendStatus(201)
-    })
-    .catch((err) => {
-      res.sendStatus(500).send(err)
-    })
-  })
+// // review
+// router.post('/', (req, res) => {
+//   addReview(req.body)
+//   .then(() => {
+//     res.sendStatus(201)
+//   })
+//   .catch((err) => {
+//     res.sendStatus(500).send(err)
+//   })
+// })
 
-// PUT
+// // PUT
 
-// REPORT A REVIEW!
-router.put('/:review_id/report', (req, res) => {
-  putReport(req.params.review_id)
-  .then (() => {
-    res.sendStatus(204)
-  })
-  .catch((err) => {
-    res.send(err).sendStatus(500)
-  })
-})
+// // REPORT A REVIEW!
+// router.put('/:review_id/report', (req, res) => {
+// putReport(req.params.review_id)
+// .then (() => {
+//   res.sendStatus(204)
+// })
+// .catch((err) => {
+//   res.send(err).sendStatus(500)
+// })
+// })
 
-// INCREMENT HELPFUL!
-router.put('/:review_id/helpful', (req, res) => {
-  console.log(req.params.review_id)
-  putHelpful(req.params.review_id)
-  .then(() => {
-    res.sendStatus(204)
-  })
-  .catch((err) => {
-    res.send(err).sendStatus(500)
-  })
-})
+// // INCREMENT HELPFUL!
+// router.put('/:review_id/helpful', (req, res) => {
+// console.log(req.params.review_id)
+// putHelpful(req.params.review_id)
+// .then(() => {
+//   res.sendStatus(204)
+// })
+// .catch((err) => {
+//   res.send(err).sendStatus(500)
+// })
+// })
 
 
 // GET Requests
@@ -131,16 +133,3 @@ router.put('/:review_id/helpful', (req, res) => {
 // });
 
 // // PUT requests
-
-
-
-
-app.use(express.static(path.join(__dirname, '../dist')));
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-const mountRoutes = require('./db/routes.js');
-
-// mountRoutes(app);

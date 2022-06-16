@@ -102,9 +102,9 @@ function RatingsAndReviews({ productID }) {
       .then((results) => setReviews(results.data.results));
   };
 
-  const submitHelpfulNess = (value, reviewId) => {
+  const submitHelpfulNess = (value, review_id) => {
     if (value === 'yes') {
-      axios.put(`${url}reviews/${reviewId}/helpful`, null, {
+      axios.put(`${url}reviews/${review_id}/helpful`, null, {
         headers: { Authorization: config.TOKEN },
       });
     }
