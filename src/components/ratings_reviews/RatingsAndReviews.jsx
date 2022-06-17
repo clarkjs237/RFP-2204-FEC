@@ -36,8 +36,19 @@ function RatingsAndReviews({ productID }) {
     recommended: { false: '', true: '' },
   });
 
-  const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
-  const id = productID;
+  // ------------------------------------------------------
+  //                  Working Version
+  // ------------------------------------------------------
+  // const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
+  // const id = productID;
+  // ------------------------------------------------------
+  //                     Sully Version
+  // ------------------------------------------------------
+  const url = 'http://localhost:8080/';
+  const id = 1000011;
+  productID = id; // need to reset what productID is
+  // ------------------------------------------------------
+
   useEffect(() => {
     axios
       .get(`${url}reviews/?product_id=${id}&sort=newest&count=1000`, {
@@ -50,6 +61,7 @@ function RatingsAndReviews({ productID }) {
       })
       .then((results) => setMeta({ ...results.data }));
   }, [id]);
+
 
   const toggleRatedReviews = (rating) => {
     const copy = { ...ratingSwitch };

@@ -20,6 +20,17 @@ function ReviewModal({ meta, productID, setReviews, toggleModal }) {
 
   const metaEntries = Object.entries(meta.characteristics);
 
+  // ------------------------------------------------------
+  //                  Working Version
+  // ------------------------------------------------------
+  // const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
+  // const id = productID;
+  // ------------------------------------------------------
+  //                     Sully Version
+  // ------------------------------------------------------
+  const url = 'http://localhost:8080/';
+  // ------------------------------------------------------
+
   const uploadImages = (event) => {
     const bodyFormData = new FormData();
     bodyFormData.append('file', event.target.files[0]);
@@ -65,7 +76,7 @@ function ReviewModal({ meta, productID, setReviews, toggleModal }) {
 
     axios
       .post(
-        `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/reviews`,
+        `${url}reviews`,
         newPost,
         {
           headers: { Authorization: config.TOKEN },
@@ -77,7 +88,7 @@ function ReviewModal({ meta, productID, setReviews, toggleModal }) {
       .then(() => {
         axios
           .get(
-            `https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/reviews/?product_id=${productID}&sort=newest&count=1000`,
+            `${url}reviews/?product_id=${productID}&sort=newest&count=1000`,
             {
               headers: { Authorization: config.TOKEN },
             }
