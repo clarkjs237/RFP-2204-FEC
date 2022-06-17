@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
@@ -15,7 +13,7 @@ export default function Question({ question, searchInput }) {
   const [helpful, setHelpful] = useState(question.question_helpfulness);
   const [showModal, setShowModal] = useState(false);
 
-  const url = process.env.PGHOST;
+  const url = config.PGHOST;
 
   let answerArr = Object.keys(question.answers).map((a) => question.answers[a]);
   const sellerCompare = (a, b) => {

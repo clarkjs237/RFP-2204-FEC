@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -13,7 +11,7 @@ export default function QnA({ productID }) {
   const [searchInput, setSearchInput] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
-  const url = process.env.PGHOST;
+  const url = config.PGHOST;
 
   useEffect(() => {
     axios

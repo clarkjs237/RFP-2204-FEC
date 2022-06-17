@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -11,7 +9,7 @@ export default function AddAQuestion({ productID, setOpenModal }) {
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
 
-  const url = process.env.PGHOST;
+  const url = config.PGHOST;
 
   const isValidEmail = (val) => {
     const validEmail =

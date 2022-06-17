@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
@@ -14,7 +12,7 @@ export default function AddAnswer({ question, setShowModal }) {
   const [photos, setPhotos] = React.useState([]);
   const [photosUpload, setPhotosUpload] = React.useState([]);
 
-  const url = process.env.PGHOST;
+  const url = config.PGHOST;
 
   const isValidEmail = (val) => {
     const validEmail =
