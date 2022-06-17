@@ -31,15 +31,15 @@ CREATE TABLE answers_photos (
 
 COPY questions (id, product_id, body, date_written, asker_name, asker_email, reported, helpful)
 FROM
-  '/Users/james/Source/rfp2204-sdc/server/questions.csv' DELIMITER ',' CSV HEADER;
+  '/srv/data/questions.csv' DELIMITER ',' CSV HEADER;
 
 COPY answers (id, question_id, body, date_written, answerer_name, answerer_email, reported, helpful)
 FROM
-  '/Users/james/Source/rfp2204-sdc/server/answers.csv' DELIMITER ',' CSV HEADER;
+  '/srv/data/answers.csv' DELIMITER ',' CSV HEADER;
 
 COPY answers_photos (id, answer_id, url)
 FROM
-  '/Users/james/Source/rfp2204-sdc/server/answers_photos.csv' DELIMITER ',' CSV HEADER;
+  '/srv/data/answers_photos.csv' DELIMITER ',' CSV HEADER;
 
 ALTER TABLE questions
   ALTER COLUMN date_written SET DATA TYPE timestamp WITH time zone USING timestamp WITH time zone 'epoch' + date_written * interval '1 millisecond';
