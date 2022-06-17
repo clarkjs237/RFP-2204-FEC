@@ -70,3 +70,7 @@ SELECT
       SELECT
         max(id)
       FROM answers_photos));
+
+CREATE INDEX questions_product_id_index ON questions (product_id);
+CREATE INDEX answers_question_id_index ON answers (question_id);
+CREATE INDEX answers_photos_answer_id_index ON answers_photos (answer_id);
