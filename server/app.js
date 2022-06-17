@@ -1,8 +1,10 @@
 const express = require('express');
 const path = require('path');
+require("dotenv").config()
 
 const app = express();
-const port = 8080;
+// const port = 8080;
+const port = 3000;
 
 app.use(express.static(path.join(__dirname, '../dist')));
 
@@ -10,11 +12,14 @@ app.use(express.static(path.join(__dirname, '../dist')));
 app.use(express.json());
 
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(port, (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(`Listening at ${process.env.PGHOST} on port ${port}`);
+  }
 });
 
-app.get('/hello', (req, res) => res.send('hello!'))
 
 // ROUTING FOR ALL ROUTES
 const mountAllRoutes = require('./router');

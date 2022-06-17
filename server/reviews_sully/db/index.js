@@ -1,4 +1,5 @@
 const pg = require('pg');
+require("dotenv").config();
 
 // Config for the database
 // Will likely have to change the user, pw, host
@@ -11,11 +12,18 @@ const pg = require('pg');
 // }
 
 //
+// const config = {
+//   user: 'sullyclark',
+//   password: 'password',
+//   database: 'reviews_db',
+//   host: 'ec2-54-184-131-113.us-west-2.compute.amazonaws.com',
+//   port: 5432
+// }
 const config = {
-  user: 'sullyclark',
-  password: 'password',
-  database: 'reviews_db',
-  host: 'ec2-54-184-131-113.us-west-2.compute.amazonaws.com',
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  database: process.env.PGDATABASE,
+  host: process.env.PGHOST,
   port: 5432
 }
 
@@ -27,14 +35,11 @@ const pool = new pg.Pool(config);
 
 // Async connect to the pool
 async function connector() {
-  // console.log(pool)
-  // const client = await pool.connect();
   await pool.connect();
 }
 
 // Connect to the pool
 connector();
-// const client = connector();
 
 // ---------------------------------------
 //          CRUD OPERATIONS
