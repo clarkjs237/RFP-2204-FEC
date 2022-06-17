@@ -8,6 +8,8 @@ import Reviews from './Reviews';
 import ReviewModal from './ReviewModal';
 import config from '../../../config/config';
 
+require("dotenv").config();
+
 function RatingsAndReviews({ productID }) {
   const [modalActive, setModalStatus] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -44,7 +46,7 @@ function RatingsAndReviews({ productID }) {
   // ------------------------------------------------------
   //                     Sully Version
   // ------------------------------------------------------
-  const url = 'http://54.184.164.212:3000/';
+  const url = process.env.HOSTSERVER + process.env.HOSTPORT;
   const id = 1000011;
   productID = id; // need to reset what productID is
   // ------------------------------------------------------

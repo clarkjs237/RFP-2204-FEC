@@ -4,7 +4,7 @@ require("dotenv").config()
 
 const app = express();
 // const port = 8080;
-const port = 3000;
+const port = parseInt(process.env.HOSTPORT) || 3000;
 
 app.use(express.static(path.join(__dirname, '../dist')));
 
