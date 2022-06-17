@@ -11,7 +11,7 @@ export default function QnA({ productID }) {
   const [searchInput, setSearchInput] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
-  const url = 'http://3.101.61.16:8080/';
+  const url = process.env.PGHOST;
 
   useEffect(() => {
     axios

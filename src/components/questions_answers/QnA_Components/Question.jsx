@@ -13,7 +13,7 @@ export default function Question({ question, searchInput }) {
   const [helpful, setHelpful] = useState(question.question_helpfulness);
   const [showModal, setShowModal] = useState(false);
 
-  const url = 'http://3.101.61.16:8080/';
+  const url = process.env.PGHOST;
 
   let answerArr = Object.keys(question.answers).map((a) => question.answers[a]);
   const sellerCompare = (a, b) => {

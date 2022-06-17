@@ -12,7 +12,7 @@ export default function AddAnswer({ question, setShowModal }) {
   const [photos, setPhotos] = React.useState([]);
   const [photosUpload, setPhotosUpload] = React.useState([]);
 
-  const url = 'http://3.101.61.16:8080/';
+  const url = process.env.PGHOST;
 
   const isValidEmail = (val) => {
     const validEmail =

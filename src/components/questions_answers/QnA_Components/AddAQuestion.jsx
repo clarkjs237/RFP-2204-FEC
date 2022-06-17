@@ -9,7 +9,7 @@ export default function AddAQuestion({ productID, setOpenModal }) {
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
 
-  const url = 'http://3.101.61.16:8080/';
+  const url = process.env.PGHOST;
 
   const isValidEmail = (val) => {
     const validEmail =

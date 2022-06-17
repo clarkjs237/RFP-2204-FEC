@@ -11,7 +11,7 @@ export default function AnswerList({ answer }) {
   const [helpful, setHelpful] = useState(answer.helpfulness);
   const [reportToggle, setReportToggle] = useState(false);
 
-  const url = 'http://3.101.61.16:8080/';
+  const url = process.env.PGHOST;
 
   const markAnswerHelpful = () => {
     if (!marked) {
