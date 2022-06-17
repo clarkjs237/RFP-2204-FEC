@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';

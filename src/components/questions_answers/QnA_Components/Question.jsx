@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import axios from 'axios';
