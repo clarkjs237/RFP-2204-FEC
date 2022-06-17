@@ -72,7 +72,6 @@ router.put('/:review_id/helpful', (req, res) => {
 
 // Marking a review as reported
 router.put('/:review_id/report', (req, res) => {
-
   markReported(req.params.review_id)
   .then(() => res.sendStatus(204))
   .catch((err) => console.error(err))

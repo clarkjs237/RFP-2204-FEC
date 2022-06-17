@@ -28,6 +28,7 @@ const pool = new pg.Pool(config);
 // Async connect to the pool
 async function connector() {
   // console.log(pool)
+  // const client = await pool.connect();
   await pool.connect();
 }
 
