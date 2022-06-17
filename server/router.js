@@ -6,5 +6,4 @@ const reviews_sully = require('./reviews_sully/routes/reviews');
 
 module.exports = app => {
   app.use('/reviews', reviews_sully);
-  // ex: app.use('/questions', questions);
 }

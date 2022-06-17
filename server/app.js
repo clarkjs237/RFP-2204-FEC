@@ -20,8 +20,17 @@ app.listen(port, (err) => {
   }
 });
 
+// This should be fine
+//app.get('/hello', (req, res) => res.send('hi'))
 
 // ROUTING FOR ALL ROUTES
 const mountAllRoutes = require('./router');
 
 mountAllRoutes(app);
+
+//app.get('/hello', (req, res) => res.send('hello'))
+
+// Adding this for loader.io
+app.get('/loaderio-6540b7053e404f8cd0108adf0ae6a791', (req, res) => {
+  res.status(200).send('loaderio-6540b7053e404f8cd0108adf0ae6a791');
+});

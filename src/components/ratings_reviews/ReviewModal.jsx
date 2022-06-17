@@ -28,7 +28,7 @@ function ReviewModal({ meta, productID, setReviews, toggleModal }) {
   // ------------------------------------------------------
   //                     Sully Version
   // ------------------------------------------------------
-  const url = 'http://localhost:8080/';
+  const url = 'http://54.184.164.212:3000/';
   // ------------------------------------------------------
 
   const uploadImages = (event) => {

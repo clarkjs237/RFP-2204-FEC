@@ -18,7 +18,7 @@ require("dotenv").config();
 //   database: 'reviews_db',
 //   host: 'ec2-54-184-131-113.us-west-2.compute.amazonaws.com',
 //   port: 5432
-// }
+//}
 const config = {
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,

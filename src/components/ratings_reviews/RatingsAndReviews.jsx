@@ -44,7 +44,7 @@ function RatingsAndReviews({ productID }) {
   // ------------------------------------------------------
   //                     Sully Version
   // ------------------------------------------------------
-  const url = 'http://localhost:8080/';
+  const url = 'http://54.184.164.212:3000/';
   const id = 1000011;
   productID = id; // need to reset what productID is
   // ------------------------------------------------------
