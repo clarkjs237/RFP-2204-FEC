@@ -14,6 +14,8 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
+app.get('/hello', (req, res) => res.send('hello!'))
+
 // ROUTING FOR ALL ROUTES
 const mountAllRoutes = require('./router');
 

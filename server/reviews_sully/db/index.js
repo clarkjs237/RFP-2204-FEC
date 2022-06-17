@@ -2,11 +2,20 @@ const pg = require('pg');
 
 // Config for the database
 // Will likely have to change the user, pw, host
+// const config = {
+//   user: 'sullyclark',
+//   password: 'password',
+//   database: 'reviews_db',
+//   host: 'localhost',
+//   port: 5432
+// }
+
+//
 const config = {
   user: 'sullyclark',
   password: 'password',
   database: 'reviews_db',
-  host: 'localhost',
+  host: 'ec2-54-184-131-113.us-west-2.compute.amazonaws.com',
   port: 5432
 }
 
@@ -18,11 +27,13 @@ const pool = new pg.Pool(config);
 
 // Async connect to the pool
 async function connector() {
+  // console.log(pool)
   await pool.connect();
 }
 
 // Connect to the pool
 connector();
+// const client = connector();
 
 // ---------------------------------------
 //          CRUD OPERATIONS
