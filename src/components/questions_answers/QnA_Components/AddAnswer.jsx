@@ -12,7 +12,7 @@ export default function AddAnswer({ question, setShowModal }) {
   const [photos, setPhotos] = React.useState([]);
   const [photosUpload, setPhotosUpload] = React.useState([]);
 
-  const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
+  const url = 'http://3.101.61.16:8080/';
 
   const isValidEmail = (val) => {
     const validEmail =

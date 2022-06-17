@@ -11,7 +11,7 @@ export default function AnswerList({ answer }) {
   const [helpful, setHelpful] = useState(answer.helpfulness);
   const [reportToggle, setReportToggle] = useState(false);
 
-  const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
+  const url = 'http://3.101.61.16:8080/';
 
   const markAnswerHelpful = () => {
     if (!marked) {

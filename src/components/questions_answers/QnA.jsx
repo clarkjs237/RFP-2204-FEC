@@ -11,7 +11,7 @@ export default function QnA({ productID }) {
   const [searchInput, setSearchInput] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
-  const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
+  const url = 'http://3.101.61.16:8080/';
 
   useEffect(() => {
     axios

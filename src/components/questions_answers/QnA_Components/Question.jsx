@@ -13,7 +13,7 @@ export default function Question({ question, searchInput }) {
   const [helpful, setHelpful] = useState(question.question_helpfulness);
   const [showModal, setShowModal] = useState(false);
 
-  const url = 'https://app-hrsei-api.herokuapp.com/api/fec2/hr-rfp/';
+  const url = 'http://3.101.61.16:8080/';
 
   let answerArr = Object.keys(question.answers).map((a) => question.answers[a]);
   const sellerCompare = (a, b) => {
