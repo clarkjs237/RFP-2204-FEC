@@ -1,7 +1,11 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
+
+// Allow app to use cors for load balancer requests
+app.use(cors());
 // const port = 8080;
 const port = parseInt(process.env.HOSTPORT) || 3000;
 
