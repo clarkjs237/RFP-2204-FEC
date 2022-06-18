@@ -8,7 +8,6 @@ import Reviews from './Reviews';
 import ReviewModal from './ReviewModal';
 import config from '../../../config/config';
 
-require("dotenv").config();
 
 function RatingsAndReviews({ productID }) {
   const [modalActive, setModalStatus] = useState(false);

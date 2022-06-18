@@ -6,7 +6,7 @@ import CharacteristicsButtons from './CharacteristicsButtons';
 import ClickStars from './ClickStars';
 import config from '../../../config/config';
 
-require("dotenv").config();
+// require("dotenv").config();
 
 function ReviewModal({ meta, productID, setReviews, toggleModal }) {
   const [wordCount, updateWordCount] = useState(0);
@@ -32,7 +32,8 @@ function ReviewModal({ meta, productID, setReviews, toggleModal }) {
   // ------------------------------------------------------
  // const url = 'http://54.184.164.212:3000/';
   const url = process.env.HOSTSERVER + process.env.HOSTPORT;
-  // ------------------------------------------------------
+  console.log(url);
+   // ------------------------------------------------------
 
   const uploadImages = (event) => {
     const bodyFormData = new FormData();
